@@ -70,7 +70,9 @@ public class Main extends Application {
         createPhilosophers();
         for (int i =0 ;i<5;i++){
             root.getChildren().add(philosophers.get(i).getRectangle());
+
         }
+      //  refresh();
 
         Scene scene = new Scene(root,1000,1000);
         primaryStage.setMaximized(true);
@@ -148,7 +150,7 @@ public class Main extends Application {
         return newPoint;
     }
 
-    public void refresh(){
+    public void refresh() throws InterruptedException {
         while (true) {
             Map<String, String> map = null;
             while(map == null){
