@@ -28,7 +28,7 @@ int initSocket(){
     direction.sin_addr.s_addr = INADDR_ANY;
 
     if (bind(socketDescriptor, (struct sockaddr *)&direction, sizeof (direction)) == -1) {
-        printf ("Address or port error, may be used by other socket or service. Try Again!\n. Server shutting down...\n");
+        printf ("Address or port error, may be used by other socket or service. Try Again!\nServer shutting down...\n");
         close(socketDescriptor);
         sleep(2);
         exit(EXIT_FAILURE);

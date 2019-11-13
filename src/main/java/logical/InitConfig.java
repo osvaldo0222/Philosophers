@@ -2,13 +2,13 @@ package logical;
 
 public class InitConfig {
     private int NPhil;
-    private String SEating;
-    private String SHungry;
-    private String SThinking;
+    private int SEating;
+    private int SHungry;
+    private int SThinking;
     private int TThinkig;
     private int TEating;
 
-    public InitConfig(int NPhil, String SEating, String SHungry, String SThinking, int TThinkig, int TEating) {
+    public InitConfig(int NPhil, int SEating, int SHungry, int SThinking, int TThinkig, int TEating) {
         this.NPhil = NPhil;
         this.SEating = SEating;
         this.SHungry = SHungry;
@@ -25,27 +25,27 @@ public class InitConfig {
         this.NPhil = NPhil;
     }
 
-    public String getSEating() {
+    public int getSEating() {
         return SEating;
     }
 
-    public void setSEating(String SEating) {
+    public void setSEating(int SEating) {
         this.SEating = SEating;
     }
 
-    public String getSHungry() {
+    public int getSHungry() {
         return SHungry;
     }
 
-    public void setSHungry(String SHungry) {
+    public void setSHungry(int SHungry) {
         this.SHungry = SHungry;
     }
 
-    public String getSThinking() {
+    public int getSThinking() {
         return SThinking;
     }
 
-    public void setSThinking(String SThinking) {
+    public void setSThinking(int SThinking) {
         this.SThinking = SThinking;
     }
 

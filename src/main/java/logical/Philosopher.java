@@ -1,6 +1,5 @@
-package visual;
+package logical;
 
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.awt.*;

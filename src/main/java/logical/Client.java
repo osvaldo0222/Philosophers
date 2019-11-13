@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Client {
     private String address;
@@ -25,9 +23,11 @@ public class Client {
         try {
             socket = new Socket(address, port);
         } catch(UnknownHostException e) {
-            System.out.println(e);
+            System.out.println("Server " + address + " on port " + port + " is down!\n" + e);
+            System.exit(-1);
         } catch(IOException e) {
-            System.out.println(e);
+            System.out.println("Server " + address + " on port " + port + " is down!\n" + e);
+            System.exit(-1);
         }
         return socket;
     }
@@ -69,15 +69,5 @@ public class Client {
             }
         }
         return result;
-    }
-
-    public static Map<String, String> stringToMap(String value){
-        Map<String, String> map = new HashMap<>();
-        String[] list = value.split(",");
-        for (String string : list) {
-            String[] strings = string.split(":");
-            map.put(strings[0].trim(), strings[1].trim());
-        }
-        return map;
     }
 }
