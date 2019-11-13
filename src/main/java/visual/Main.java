@@ -72,11 +72,6 @@ public class Main extends Application {
             root.getChildren().add(philosophers.get(i).getRectangle());
         }
 
-        //root.getChildren().add(r1);
-        //root.getChildren().add(r2);
-        /*root.getChildren().add();
-        root.getChildren().add();*/
-
         Scene scene = new Scene(root,1000,1000);
         primaryStage.setMaximized(true);
         primaryStage.setTitle("Animation");
@@ -127,22 +122,14 @@ public class Main extends Application {
             Point pointTo = xyPoint(startAngle);
             pointTo = translate(pointTo,centerPoint);
 
-            if (map.get(i + "").equalsIgnoreCase(initConfig.getSHungry())){
-                //hungry
-                philosopher.getRectangle().setFill(Color.RED);
-            }else if (map.get(i + "").equalsIgnoreCase(initConfig.getSEating())){
-                //eating
-                philosopher.getRectangle().setFill(Color.GREEN);
-            }else if (map.get(i + "").equalsIgnoreCase(initConfig.getSThinking())){
-                //Thinking
-                philosopher.getRectangle().setFill(Color.BLUE);
-            }
+            philosopher.setId(i);
+            philosopher.setState(Integer.parseInt(map.get(i + "")));
+
             philosopher.getRectangle().setLayoutX(pointTo.getX());
             philosopher.getRectangle().setLayoutY(pointTo.getY());
             philosophers.add(philosopher);
             startAngle+= angle;
         }
-
     }
 
     public Point xyPoint( double angle){
@@ -162,6 +149,27 @@ public class Main extends Application {
     }
 
     public void refresh(){
+        while (true) {
+            Map<String, String> map = null;
+            while(map == null){
+                map = Client.stringToMap(client.readLine());
+            }
 
+            for (int i = 0;i < initConfig.getNPhil();i++) {
+                if (map.get(i + "").equalsIgnoreCase(initConfig.getSHungry())){
+                    //hungry
+                    philosophers.get(i).getRectangle().setFill(Color.RED);
+                }else if (map.get(i + "").equalsIgnoreCase(initConfig.getSEating())){
+                    //eating
+                    philosophers.get(i).getRectangle().setFill(Color.GREEN);
+
+                }else if (map.get(i + "").equalsIgnoreCase(initConfig.getSThinking())){
+                    //Thinking
+                    philosophers.get(i).getRectangle().setFill(Color.BLUE);
+                }
+            }
+
+            Thread.sleep(initConfig.getTThinkig() * 1000);
+        }
     }
 }
