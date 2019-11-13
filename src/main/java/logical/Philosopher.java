@@ -1,26 +1,25 @@
 package logical;
 
-import javafx.scene.image.Image;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Circle;
 
 import java.awt.*;
 
 public class Philosopher {
     private int id;
     private int state;
-    private Rectangle rectangle;
+    private Circle circle;
     private Point point;
 
     public Philosopher(){
-        createRectangle();
+        createCircle();
     }
 
-    public Rectangle getRectangle() {
-        return rectangle;
+    public Circle getCircle() {
+        return circle;
     }
 
-    public void setRectangle(Rectangle rectangle) {
-        this.rectangle = rectangle;
+    public void setCircle(Circle circle) {
+        this.circle = circle;
     }
 
     public Point getPoint() {
@@ -31,13 +30,11 @@ public class Philosopher {
         this.point = point;
     }
 
-    public Rectangle createRectangle(){
-        Rectangle r1 = new Rectangle();
-        setRectangle(r1);
-        getRectangle().setHeight(70);
-        getRectangle().setWidth(70);
-        getRectangle().setRotate(45);
-        return getRectangle();
+    public Circle createCircle(){
+        Circle r1 = new Circle();
+        setCircle(r1);
+        getCircle().setRadius(40);
+        return getCircle();
     }
 
     public int getId() {

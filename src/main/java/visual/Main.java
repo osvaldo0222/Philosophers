@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -35,7 +34,7 @@ public class Main extends Application {
         root.getChildren().add(createCircle());
         root.getChildren().add(createMenu());
         for (int i = 0;i < Controller.getInstance().getInitConfig().getNPhil();i++){
-            root.getChildren().add(Controller.getInstance().getPhilosophers().get(i).getRectangle());
+            root.getChildren().add(Controller.getInstance().getPhilosophers().get(i).getCircle());
         }
         Scene scene = new Scene(root,1000,1000);
         primaryStage.setMaximized(true);

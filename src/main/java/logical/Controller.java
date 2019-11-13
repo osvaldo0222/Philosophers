@@ -1,10 +1,14 @@
 package logical;
 
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import visual.Main;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,8 +20,14 @@ public class Controller extends Thread {
     private static Controller controller;
     private String serverAddress = "127.0.0.1";
     private int port = 4567;
+    private FileInputStream inputStreamDish = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/hungry.png");
+    private FileInputStream inputStreamEating = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/eating.png");
+    private FileInputStream inputStreamThinking = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/thinking.png");
+    private Image imageDish = new Image(inputStreamDish);
+    private Image imageeating = new Image(inputStreamEating);
+    private Image imageThinking = new Image(inputStreamThinking);
 
-    private Controller() {
+    private Controller() throws FileNotFoundException {
         client = new Client(serverAddress, port);
         Map<String, String> map = getInfo();
         initConfig = new InitConfig(Integer.parseInt(map.get("NPhil")), Integer.parseInt(map.get("SEating")), Integer.parseInt(map.get("SHungry")), Integer.parseInt(map.get("SThinking")), Integer.parseInt(map.get("TThinking")), Integer.parseInt(map.get("TEating")));
@@ -25,7 +35,7 @@ public class Controller extends Thread {
         createPhilosophers(map);
     }
 
-    public static Controller getInstance() {
+    public static Controller getInstance() throws FileNotFoundException {
         if (controller == null) {
             controller = new Controller();
         }
@@ -111,8 +121,9 @@ public class Controller extends Thread {
             pointTo = translate(pointTo,centerPoint);
             philosopher.setId(i);
             philosopher.setState(Integer.parseInt(map.get(i + "")));
-            philosopher.getRectangle().setLayoutX(pointTo.getX());
-            philosopher.getRectangle().setLayoutY(pointTo.getY());
+            philosopher.getCircle().setLayoutX(pointTo.getX());
+            philosopher.getCircle().setLayoutY(pointTo.getY());
+
             philosophers.add(philosopher);
             startAngle += angle;
         }
@@ -130,7 +141,7 @@ public class Controller extends Thread {
     private Point translate(Point point, Point2D to){
         Point newPoint = new Point((int)point.getX(), (int) point.getY());
         System.out.println("Pont X"+ point.getX() + "Point to X"+ to.getX() +"Point Y" + point.getY() +"To Y" +to.getY() );
-        newPoint.setLocation(point.getX()+ (to.getX() - 30), point.getY() + (to.getY()-35));
+        newPoint.setLocation(point.getX()+ (to.getX() ), point.getY() + (to.getY()));
         return newPoint;
     }
 
@@ -140,13 +151,14 @@ public class Controller extends Thread {
             aux.setState(Integer.parseInt(map.get(aux.getId() + "")));
             if (aux.getState() == initConfig.getSHungry()) {
                 //hungry
-                aux.getRectangle().setFill(Color.RED);
+                aux.getCircle().setFill(new ImagePattern(imageDish));
             } else if(aux.getState() == initConfig.getSEating()) {
                 //eating
-                aux.getRectangle().setFill(Color.GREEN);
+
+                aux.getCircle().setFill(new ImagePattern(imageeating));
             } else {
                 //Thinking
-                aux.getRectangle().setFill(Color.BLUE);
+                aux.getCircle().setFill(new ImagePattern(imageThinking));
             }
         }
     }
