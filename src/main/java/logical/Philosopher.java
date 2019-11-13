@@ -1,5 +1,6 @@
 package logical;
 
+import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
 
 import java.awt.*;

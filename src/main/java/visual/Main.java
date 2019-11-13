@@ -4,17 +4,26 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import logical.Controller;
 
 import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class Main extends Application {
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private FileInputStream inputStream = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/Barrel2.png");
+    private Image image = new Image(inputStream);
+
+    public Main() throws FileNotFoundException {
+    }
 
     public static void main(String[] args) {
         launch(args);
@@ -45,10 +54,12 @@ public class Main extends Application {
 
     public Circle createCircle() {
         Circle table = new Circle();
-        table.setRadius(300);
+
+        table.setRadius(360);
         table.setLayoutX(screenSize.getWidth()/2);
         table.setLayoutY(screenSize.getHeight()/2);
-        table.setFill(Color.YELLOW);
+        table.setFill(new ImagePattern(image));
+       // table.setFill(Color.YELLOW);
         return table;
     }
 

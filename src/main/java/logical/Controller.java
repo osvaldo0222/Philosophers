@@ -129,7 +129,8 @@ public class Controller extends Thread {
 
     private Point translate(Point point, Point2D to){
         Point newPoint = new Point((int)point.getX(), (int) point.getY());
-        newPoint.setLocation(point.getX()+ to.getX(), point.getY() + to.getY());
+        System.out.println("Pont X"+ point.getX() + "Point to X"+ to.getX() +"Point Y" + point.getY() +"To Y" +to.getY() );
+        newPoint.setLocation(point.getX()+ (to.getX() - 30), point.getY() + (to.getY()-35));
         return newPoint;
     }
 
