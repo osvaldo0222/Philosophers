@@ -10,7 +10,7 @@
 #include <semaphore.h> 
 #include <string.h>
   
-#define N 11
+#define N 5
 #define EATING 0 
 #define HUNGRY 1 
 #define THINKING 2 
@@ -98,12 +98,12 @@ void* listenClients(){
         } else {
             //printf("Client connected, Sending information...\n");
             char message[1024]; 
-            //sem_wait(&mutex);
+           // sem_wait(&mutex);
             int writed = sprintf(message, "NPhil: %d, SEating: %d, SHungry: %d, SThinking: %d, TThinking: %d, TEating: %d, CEating: %d, CHungry: %d, CThinking: %d", N, EATING, HUNGRY, THINKING, TIME_THINKING, TIME_EATING, philEating, philHungry, philThinking);
             for (int i = 0; i < N; i++) {
                 writed += sprintf(&message[writed], ", %d: %d", phil[i], state[i]); 
             }
-           // sem_post(&mutex);
+            //sem_post(&mutex);
             send(descriptor_client, message, writed, 0);
             close(descriptor_client);
             //printf("Connection to client closed\n\n");

@@ -3,6 +3,7 @@ package logical;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.text.Text;
 import visual.Main;
 
 import java.awt.*;
@@ -23,9 +24,14 @@ public class Controller extends Thread {
     private FileInputStream inputStreamDish = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/hungry.png");
     private FileInputStream inputStreamEating = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/eating.png");
     private FileInputStream inputStreamThinking = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/thinking.png");
+    private FileInputStream inputStreamDishNoFork = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/noForkDish.png");
+    private FileInputStream inputStreamThinkingWFork = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/ThinkingFork.png");
+
     private Image imageDish = new Image(inputStreamDish);
     private Image imageeating = new Image(inputStreamEating);
     private Image imageThinking = new Image(inputStreamThinking);
+    private Image imageDishNoFork = new Image(inputStreamDishNoFork);
+    private Image getImageThinkingFork = new Image(inputStreamThinkingWFork);
 
     private Controller() throws FileNotFoundException {
         client = new Client(serverAddress, port);
@@ -151,16 +157,53 @@ public class Controller extends Thread {
             aux.setState(Integer.parseInt(map.get(aux.getId() + "")));
             if (aux.getState() == initConfig.getSHungry()) {
                 //hungry
-                aux.getCircle().setFill(new ImagePattern(imageDish));
+                if(philosophers.get(left(aux.getId())).getState()== initConfig.getSEating()){
+                    aux.getCircle().setFill(new ImagePattern(imageDishNoFork));
+                } else {
+                    aux.getCircle().setFill(new ImagePattern(imageDish));
+                }
             } else if(aux.getState() == initConfig.getSEating()) {
                 //eating
-
                 aux.getCircle().setFill(new ImagePattern(imageeating));
-            } else {
+            } else if(aux.getState() == initConfig.getSThinking()){
                 //Thinking
-                aux.getCircle().setFill(new ImagePattern(imageThinking));
+               if(philosophers.get(left(aux.getId())).getState()== initConfig.getSEating()){
+                    aux.getCircle().setFill(new ImagePattern(imageDishNoFork));
+                } else {
+                    aux.getCircle().setFill(new ImagePattern(imageDish));
+                }
+            }
+
+            if (aux.getId() == initConfig.getNPhil() - 1) {
+                philosophers.get(0).setState(Integer.parseInt(map.get("0")));
+                if (philosophers.get(0).getState() == initConfig.getSHungry()) {
+                    //hungry
+                    if(philosophers.get(left(0)).getState()== initConfig.getSEating()){
+                        philosophers.get(0).getCircle().setFill(new ImagePattern(imageDishNoFork));
+                    } else {
+                        philosophers.get(0).getCircle().setFill(new ImagePattern(imageDish));
+                    }
+                } else if(philosophers.get(0).getState() == initConfig.getSEating()) {
+                    //eating
+                    philosophers.get(0).getCircle().setFill(new ImagePattern(imageeating));
+                } else if(philosophers.get(0).getState()  == initConfig.getSThinking()){
+                    //Thinking
+                    if(philosophers.get(left(0)).getState()== initConfig.getSEating()){
+                        philosophers.get(0).getCircle().setFill(new ImagePattern(imageDishNoFork));
+                    } else {
+                        philosophers.get(0).getCircle().setFill(new ImagePattern(imageDish));
+                    }
+                }
             }
         }
+    }
+    public int left(int pos){
+        int position = (pos+ (initConfig.getNPhil() -1 )) % initConfig.getNPhil();
+        return position;
+    }
+    public int right(int pos){
+        int position = (pos+ 1 ) % initConfig.getNPhil();
+        return position;
     }
 
     @Override
