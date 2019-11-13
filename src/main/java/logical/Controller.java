@@ -21,11 +21,11 @@ public class Controller extends Thread {
     private static Controller controller;
     private String serverAddress = "127.0.0.1";
     private int port = 4567;
-    private FileInputStream inputStreamDish = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/hungry.png");
-    private FileInputStream inputStreamEating = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/eating.png");
-    private FileInputStream inputStreamThinking = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/thinking.png");
-    private FileInputStream inputStreamDishNoFork = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/noForkDish.png");
-    private FileInputStream inputStreamThinkingWFork = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/ThinkingFork.png");
+    private FileInputStream inputStreamDish = new FileInputStream("src/main/img/hungry.png");
+    private FileInputStream inputStreamEating = new FileInputStream("src/main/img/eating.png");
+    private FileInputStream inputStreamThinking = new FileInputStream("src/main/img/thinking.png");
+    private FileInputStream inputStreamDishNoFork = new FileInputStream("src/main/img/noForkDish.png");
+    private FileInputStream inputStreamThinkingWFork = new FileInputStream("src/main/img/ThinkingFork.png");
 
     private Image imageDish = new Image(inputStreamDish);
     private Image imageeating = new Image(inputStreamEating);

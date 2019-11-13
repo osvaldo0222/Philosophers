@@ -20,11 +20,10 @@ import java.io.FileNotFoundException;
 
 public class Main extends Application {
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private FileInputStream inputStream = new FileInputStream("/home/garco/IdeaProjects/Philosophers/src/main/java/img/Barrel2.png");
+    private FileInputStream inputStream = new FileInputStream("src/main/img/Barrel2.png");
     private Image image = new Image(inputStream);
 
-    public Main() throws FileNotFoundException {
-    }
+    public Main() throws FileNotFoundException { }
 
     public static void main(String[] args) {
         launch(args);
