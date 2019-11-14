@@ -6,10 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import logical.Controller;
@@ -20,7 +18,7 @@ import java.io.FileNotFoundException;
 
 public class Main extends Application {
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private FileInputStream inputStream = new FileInputStream("src/main/img/Barrel2.png");
+    private FileInputStream inputStream = new FileInputStream("src/main/img/Barrel.png");
     private Image image = new Image(inputStream);
 
     public Main() throws FileNotFoundException { }
@@ -33,13 +31,13 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Pane root = new Pane();
         root.getChildren().add(createCircle());
-        root.getChildren().add(createMenu());
+        //root.getChildren().add(createMenu());
         for (int i = 0;i < Controller.getInstance().getInitConfig().getNPhil();i++){
             root.getChildren().add(Controller.getInstance().getPhilosophers().get(i).getCircle());
         }
-        Scene scene = new Scene(root,1000,1000);
+        Scene scene = new Scene(root, screenSize.getWidth(), screenSize.getHeight());
         primaryStage.setMaximized(true);
-        primaryStage.setTitle("Animation");
+        primaryStage.setTitle("Filosofos Comensales");
         primaryStage.setScene(scene);
         Controller.getInstance().start();
         primaryStage.show();
@@ -54,12 +52,10 @@ public class Main extends Application {
 
     public Circle createCircle() {
         Circle table = new Circle();
-
         table.setRadius(360);
         table.setLayoutX(screenSize.getWidth()/2);
-        table.setLayoutY(screenSize.getHeight()/2);
+        table.setLayoutY(screenSize.getHeight()/2 - 28);
         table.setFill(new ImagePattern(image));
-       // table.setFill(Color.YELLOW);
         return table;
     }
 

@@ -10,14 +10,14 @@
 #include <semaphore.h> 
 #include <string.h>
   
-#define N 5
+#define N 11
 #define EATING 0 
 #define HUNGRY 1 
 #define THINKING 2 
 #define LEFT (phnum + (N - 1)) % N
 #define RIGHT (phnum + 1) % N 
-#define TIME_THINKING 1 //Seconds
-#define TIME_EATING 2
+#define TIME_THINKING 5 //Seconds
+#define TIME_EATING 10
 
 int state[N];
 int phil[N];
@@ -96,17 +96,13 @@ void* listenClients(){
         if (descriptor_client == -1) {
             printf ("Error while to handshaked to client...\n");
         } else {
-            //printf("Client connected, Sending information...\n");
-            char message[1024]; 
-           // sem_wait(&mutex);
+            char message[1024];
             int writed = sprintf(message, "NPhil: %d, SEating: %d, SHungry: %d, SThinking: %d, TThinking: %d, TEating: %d, CEating: %d, CHungry: %d, CThinking: %d", N, EATING, HUNGRY, THINKING, TIME_THINKING, TIME_EATING, philEating, philHungry, philThinking);
             for (int i = 0; i < N; i++) {
                 writed += sprintf(&message[writed], ", %d: %d", phil[i], state[i]); 
             }
-            //sem_post(&mutex);
             send(descriptor_client, message, writed, 0);
             close(descriptor_client);
-            //printf("Connection to client closed\n\n");
         }
     }
 }

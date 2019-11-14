@@ -1,9 +1,7 @@
 package logical;
 
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.text.Text;
 import visual.Main;
 
 import java.awt.*;
@@ -21,19 +19,14 @@ public class Controller extends Thread {
     private static Controller controller;
     private String serverAddress = "127.0.0.1";
     private int port = 4567;
-    private FileInputStream inputStreamDish = new FileInputStream("src/main/img/hungry.png");
-    private FileInputStream inputStreamEating = new FileInputStream("src/main/img/eating.png");
-    private FileInputStream inputStreamThinking = new FileInputStream("src/main/img/thinking.png");
-    private FileInputStream inputStreamDishNoFork = new FileInputStream("src/main/img/noForkDish.png");
-    private FileInputStream inputStreamThinkingWFork = new FileInputStream("src/main/img/ThinkingFork.png");
+    private Image imageEating;
+    private Image imageHungryNoFork;
+    private Image imageHungryFork;
+    private Image imageThinkingNoFork;
+    private Image imageThinkingFork;
 
-    private Image imageDish = new Image(inputStreamDish);
-    private Image imageeating = new Image(inputStreamEating);
-    private Image imageThinking = new Image(inputStreamThinking);
-    private Image imageDishNoFork = new Image(inputStreamDishNoFork);
-    private Image getImageThinkingFork = new Image(inputStreamThinkingWFork);
-
-    private Controller() throws FileNotFoundException {
+    private Controller() {
+        createImages();
         client = new Client(serverAddress, port);
         Map<String, String> map = getInfo();
         initConfig = new InitConfig(Integer.parseInt(map.get("NPhil")), Integer.parseInt(map.get("SEating")), Integer.parseInt(map.get("SHungry")), Integer.parseInt(map.get("SThinking")), Integer.parseInt(map.get("TThinking")), Integer.parseInt(map.get("TEating")));
@@ -41,7 +34,7 @@ public class Controller extends Thread {
         createPhilosophers(map);
     }
 
-    public static Controller getInstance() throws FileNotFoundException {
+    public static Controller getInstance() {
         if (controller == null) {
             controller = new Controller();
         }
@@ -96,6 +89,46 @@ public class Controller extends Thread {
         Controller.controller = controller;
     }
 
+    public Image getImageEating() {
+        return imageEating;
+    }
+
+    public void setImageEating(Image imageEating) {
+        this.imageEating = imageEating;
+    }
+
+    public Image getImageHungryNoFork() {
+        return imageHungryNoFork;
+    }
+
+    public void setImageHungryNoFork(Image imageHungryNoFork) {
+        this.imageHungryNoFork = imageHungryNoFork;
+    }
+
+    public Image getImageHungryFork() {
+        return imageHungryFork;
+    }
+
+    public void setImageHungryFork(Image imageHungryFork) {
+        this.imageHungryFork = imageHungryFork;
+    }
+
+    public Image getImageThinkingNoFork() {
+        return imageThinkingNoFork;
+    }
+
+    public void setImageThinkingNoFork(Image imageThinkingNoFork) {
+        this.imageThinkingNoFork = imageThinkingNoFork;
+    }
+
+    public Image getImageThinkingFork() {
+        return imageThinkingFork;
+    }
+
+    public void setImageThinkingFork(Image imageThinkingFork) {
+        this.imageThinkingFork = imageThinkingFork;
+    }
+
     public Map<String, String> getInfo() {
         Map<String, String> map = null;
         while(map == null) {
@@ -122,7 +155,7 @@ public class Controller extends Thread {
         double startAngle = 0;
         for (int i = 0;i < initConfig.getNPhil();i++){
             Philosopher philosopher = new Philosopher();
-            Point2D centerPoint = new Point2D.Double(Main.screenSize.getWidth()/2, Main.screenSize.getHeight()/2);
+            Point2D centerPoint = new Point2D.Double(Main.screenSize.getWidth()/2, Main.screenSize.getHeight()/2 - 28);
             Point pointTo = xyPoint(startAngle);
             pointTo = translate(pointTo,centerPoint);
             philosopher.setId(i);
@@ -146,73 +179,76 @@ public class Controller extends Thread {
 
     private Point translate(Point point, Point2D to){
         Point newPoint = new Point((int)point.getX(), (int) point.getY());
-        System.out.println("Pont X"+ point.getX() + "Point to X"+ to.getX() +"Point Y" + point.getY() +"To Y" +to.getY() );
+        //System.out.println("Pont X"+ point.getX() + "Point to X"+ to.getX() +"Point Y" + point.getY() +"To Y" +to.getY() );
         newPoint.setLocation(point.getX()+ (to.getX() ), point.getY() + (to.getY()));
         return newPoint;
     }
 
     public void updatePhilosophers(){
         Map<String, String> map = getInfo();
-        for (Philosopher aux : philosophers) {
+        boolean flag = false;
+        for (int i = initConfig.getNPhil() - 1; i >= 0 ;i--) {
+            Philosopher aux = philosophers.get(i);
             aux.setState(Integer.parseInt(map.get(aux.getId() + "")));
-            if (aux.getState() == initConfig.getSHungry()) {
-                //hungry
-                if(philosophers.get(left(aux.getId())).getState()== initConfig.getSEating()){
-                    aux.getCircle().setFill(new ImagePattern(imageDishNoFork));
+            if (aux.getState() == initConfig.getSEating()) {
+                aux.getCircle().setFill(new ImagePattern(imageEating));
+            } else if(aux.getState() == initConfig.getSThinking()) {
+                if (philosophers.get(right(i)).getState() == initConfig.getSEating()) {
+                    aux.getCircle().setFill(new ImagePattern(imageThinkingNoFork));
                 } else {
-                    aux.getCircle().setFill(new ImagePattern(imageDish));
+                    aux.getCircle().setFill(new ImagePattern(imageThinkingFork));
                 }
-            } else if(aux.getState() == initConfig.getSEating()) {
-                //eating
-                aux.getCircle().setFill(new ImagePattern(imageeating));
-            } else if(aux.getState() == initConfig.getSThinking()){
-                //Thinking
-               if(philosophers.get(left(aux.getId())).getState()== initConfig.getSEating()){
-                    aux.getCircle().setFill(new ImagePattern(imageDishNoFork));
+            } else {
+                if (philosophers.get(right(i)).getState() == initConfig.getSEating()) {
+                    aux.getCircle().setFill(new ImagePattern(imageHungryNoFork));
                 } else {
-                    aux.getCircle().setFill(new ImagePattern(imageDish));
+                    aux.getCircle().setFill(new ImagePattern(imageHungryFork));
                 }
             }
 
-            if (aux.getId() == initConfig.getNPhil() - 1) {
-                philosophers.get(0).setState(Integer.parseInt(map.get("0")));
-                if (philosophers.get(0).getState() == initConfig.getSHungry()) {
-                    //hungry
-                    if(philosophers.get(left(0)).getState()== initConfig.getSEating()){
-                        philosophers.get(0).getCircle().setFill(new ImagePattern(imageDishNoFork));
-                    } else {
-                        philosophers.get(0).getCircle().setFill(new ImagePattern(imageDish));
-                    }
-                } else if(philosophers.get(0).getState() == initConfig.getSEating()) {
-                    //eating
-                    philosophers.get(0).getCircle().setFill(new ImagePattern(imageeating));
-                } else if(philosophers.get(0).getState()  == initConfig.getSThinking()){
-                    //Thinking
-                    if(philosophers.get(left(0)).getState()== initConfig.getSEating()){
-                        philosophers.get(0).getCircle().setFill(new ImagePattern(imageDishNoFork));
-                    } else {
-                        philosophers.get(0).getCircle().setFill(new ImagePattern(imageDish));
-                    }
-                }
+            if(flag) {
+                break;
+            }
+
+            if (i == 0) {
+                i = initConfig.getNPhil();
+                flag = true;
             }
         }
     }
-    public int left(int pos){
-        int position = (pos+ (initConfig.getNPhil() -1 )) % initConfig.getNPhil();
-        return position;
+
+    private int left(int pos) {
+        return (pos+ (initConfig.getNPhil() -1 )) % initConfig.getNPhil();
     }
-    public int right(int pos){
-        int position = (pos+ 1 ) % initConfig.getNPhil();
-        return position;
+
+    private int right(int pos){
+        return (pos+ 1 ) % initConfig.getNPhil();
+    }
+
+    private void createImages() {
+        try {
+            FileInputStream inputStreamEating = new FileInputStream("src/main/img/Eating.png");
+            FileInputStream inputStreamHungryFork = new FileInputStream("src/main/img/HungryFork.png");
+            FileInputStream inputStreamHungryNoFork = new FileInputStream("src/main/img/HungryNoFork.png");
+            FileInputStream inputStreamThinkingNoFork = new FileInputStream("src/main/img/ThinkingNoFork.png");
+            FileInputStream inputStreamThinkingFork = new FileInputStream("src/main/img/ThinkingFork.png");
+            imageEating = new Image(inputStreamEating);
+            imageHungryNoFork = new Image(inputStreamHungryNoFork);
+            imageHungryFork = new Image(inputStreamHungryFork);
+            imageThinkingNoFork = new Image(inputStreamThinkingNoFork);
+            imageThinkingFork = new Image(inputStreamThinkingFork);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void run() {
-        final long delay = (initConfig.getTEating() >= initConfig.getTThinkig())?(initConfig.getTThinkig() * 1000):(initConfig.getTEating() * 1000);
+        final double delay = (initConfig.getTEating() >= initConfig.getTThinkig())?(initConfig.getTThinkig() * 1000):(initConfig.getTEating() * 1000);
         while (true) {
             updatePhilosophers();
             try {
-                sleep(delay);
+                sleep((delay > 2500)?2500: (long) delay);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
