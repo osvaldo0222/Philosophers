@@ -6,8 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import logical.Controller;
@@ -20,6 +22,8 @@ public class Main extends Application {
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private FileInputStream inputStream = new FileInputStream("src/main/img/Barrel.png");
     private Image image = new Image(inputStream);
+    private FileInputStream inputStreamLeyend = new FileInputStream("src/main/img/leyend.png");
+    private Image imageLeyend = new Image(inputStreamLeyend);
 
     public Main() throws FileNotFoundException { }
 
@@ -31,6 +35,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Pane root = new Pane();
         root.getChildren().add(createCircle());
+        root.getChildren().add(leyend());
         //root.getChildren().add(createMenu());
         for (int i = 0;i < Controller.getInstance().getInitConfig().getNPhil();i++){
             root.getChildren().add(Controller.getInstance().getPhilosophers().get(i).getCircle());
@@ -57,6 +62,15 @@ public class Main extends Application {
         table.setLayoutY(screenSize.getHeight()/2 - 28);
         table.setFill(new ImagePattern(image));
         return table;
+    }
+    public Rectangle leyend(){
+         Rectangle leyend = new Rectangle();
+         leyend.setWidth(400);
+         leyend.setHeight(350);
+         leyend.setLayoutX(20);
+         leyend.setLayoutY(20);
+         leyend.setFill(new ImagePattern(imageLeyend));
+        return leyend;
     }
 
     public javafx.scene.control.MenuBar createMenu(){
