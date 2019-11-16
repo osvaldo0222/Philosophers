@@ -5,29 +5,38 @@
 #include "Socket.c"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <time.h>
 #include <unistd.h>
 #include <pthread.h> 
 #include <semaphore.h> 
-#include <string.h>
-  
-#define N 11
+
 #define EATING 0 
 #define HUNGRY 1 
 #define THINKING 2 
 #define LEFT (phnum + (N - 1)) % N
 #define RIGHT (phnum + 1) % N 
-#define TIME_THINKING 5 //Seconds
-#define TIME_EATING 10
+#define LAMBDA 0.1
 
-int state[N];
-int phil[N];
+int N = 0;
+int* state;
+int* phil;
 int philEating = 0;
-int philThinking = N; 
+int philThinking = 0; 
 int philHungry = 0;
 int socketDes = -1;
   
 sem_t mutex; 
-sem_t S[N]; 
+sem_t* S;
+
+double getTimeExponential(){
+    double probability = ((double)rand())/(double)RAND_MAX;
+    probability = (probability >= 1)?0.999:probability;
+    probability = (probability <= 0)?0.001:probability;
+    double time = -1.0 * (log(1 - probability)/(double)LAMBDA);
+    return time;
+}
   
 void test(int phnum) { 
     if (state[phnum] == HUNGRY && state[LEFT] != EATING && state[RIGHT] != EATING) { 
@@ -37,7 +46,7 @@ void test(int phnum) {
         philEating++; 
         printf("Philosopher %d takes fork %d and %d\n", phnum + 1, LEFT + 1, phnum + 1); 
         printf("Philosopher %d is Eating\n", phnum + 1); 
-        sleep(TIME_EATING); 
+        sleep(getTimeExponential()); 
         // sem_post(&S[phnum]) has no effect 
         // during takefork 
         // used to wake up hungry philosophers 
@@ -59,7 +68,7 @@ void take_fork(int phnum) {
     sem_post(&mutex); 
     // if unable to eat wait to be signalled 
     sem_wait(&S[phnum]); 
-    sleep(TIME_EATING); 
+    sleep(getTimeExponential()); 
 } 
   
 // put down chopsticks 
@@ -79,12 +88,36 @@ void put_fork(int phnum) {
 void* philospher(void* num){ 
     while (1) { 
         int* i = num; 
-        sleep(TIME_THINKING); 
+        sleep(getTimeExponential()); 
         take_fork(*i); 
         sleep(0); 
         put_fork(*i); 
     } 
 } 
+
+void initProgram(){
+    socketDes = initSocket();
+    char buffer[10];
+    struct sockaddr client;
+    int client_size;
+    
+    printf("Waiting for the client...\n");
+    int descriptor_client = accept(socketDes, &client, &client_size);
+    if (descriptor_client == -1) {
+        printf("Error while to handshaked to client...\n");
+        sleep(2);
+        exit(EXIT_FAILURE);
+    } else {
+        printf("Client connected!\n");
+        read(descriptor_client , buffer, sizeof(buffer));
+    }
+    N = atoi(buffer);
+    state = (int*)malloc(sizeof(int) * N);
+    phil = (int*)malloc(sizeof(int) * N);
+    S = (sem_t*)malloc(sizeof(sem_t) * N);
+    philThinking = N;
+    close(descriptor_client);
+}
 
 void* listenClients(){
     struct sockaddr client;
@@ -97,38 +130,40 @@ void* listenClients(){
             printf ("Error while to handshaked to client...\n");
         } else {
             char message[1024];
-            int writed = sprintf(message, "NPhil: %d, SEating: %d, SHungry: %d, SThinking: %d, TThinking: %d, TEating: %d, CEating: %d, CHungry: %d, CThinking: %d", N, EATING, HUNGRY, THINKING, TIME_THINKING, TIME_EATING, philEating, philHungry, philThinking);
+           // sem_wait(&mutex);
+            int writed = sprintf(message, "NPhil: %d, SEating: %d, SHungry: %d, SThinking: %d, CEating: %d, CHungry: %d, CThinking: %d", N, EATING, HUNGRY, THINKING, philEating, philHungry, philThinking);
             for (int i = 0; i < N; i++) {
                 writed += sprintf(&message[writed], ", %d: %d", phil[i], state[i]); 
             }
+            //sem_post(&mutex);
             send(descriptor_client, message, writed, 0);
             close(descriptor_client);
         }
     }
 }
 
-int main(void){ 
-    int i; 
+int main(void){
+    srand(time(NULL));
+    initProgram();
     pthread_t thread_clients;
     pthread_t thread_id[N]; 
-    socketDes = initSocket();
-
+    
     // initialize the semaphores 
     sem_init(&mutex, 0, 1); 
   
-    for (i = 0; i < N; i++) 
-        sem_init(&S[i], 0, 0); 
+    for (int i = 0; i < N; i++) 
+        sem_init(&S[i], 0, 0);
 
-    for (i = 0; i < N; i++) { 
-        //create philosopher processes 
+    for (int i = 0; i < N; i++) { 
+        //create philosopher processes
         state[i] = THINKING;
-        phil[i] = i;
+        phil[i] = i; 
         pthread_create(&thread_id[i], NULL, philospher, &phil[i]); 
-        printf("Philosopher %d is thinking\n", i + 1); 
+        printf("Philosopher %d is thinking\n", i + 1);
     } 
-  
+
     pthread_create(&thread_clients, NULL, listenClients, NULL);
 
-    for (i = 0; i < N; i++) 
+    for (int i = 0; i < N; i++) 
         pthread_join(thread_id[i], NULL);
 } 

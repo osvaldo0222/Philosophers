@@ -36,7 +36,7 @@ int initSocket(){
         printf ("Service is active on port %d\n", PORT);
     }
 
-    if (listen(socketDescriptor, 5) == -1) {
+    if (listen(socketDescriptor, 1) == -1) {
         printf ("Error while preparing to accept connections. Server shutting down...\n");
         close(socketDescriptor);
         sleep(2);

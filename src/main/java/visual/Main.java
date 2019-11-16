@@ -5,6 +5,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -34,8 +35,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Pane root = new Pane();
-        root.getChildren().add(createCircle());
         root.getChildren().add(leyend());
+        root.getChildren().add(createCircle());
         //root.getChildren().add(createMenu());
         for (int i = 0;i < Controller.getInstance().getInitConfig().getNPhil();i++){
             root.getChildren().add(Controller.getInstance().getPhilosophers().get(i).getCircle());
@@ -65,8 +66,8 @@ public class Main extends Application {
     }
     public Rectangle leyend(){
          Rectangle leyend = new Rectangle();
-         leyend.setWidth(400);
-         leyend.setHeight(350);
+         leyend.setWidth(300);
+         leyend.setHeight(300);
          leyend.setLayoutX(20);
          leyend.setLayoutY(20);
          leyend.setFill(new ImagePattern(imageLeyend));

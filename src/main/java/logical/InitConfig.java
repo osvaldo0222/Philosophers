@@ -5,16 +5,12 @@ public class InitConfig {
     private int SEating;
     private int SHungry;
     private int SThinking;
-    private int TThinkig;
-    private int TEating;
 
-    public InitConfig(int NPhil, int SEating, int SHungry, int SThinking, int TThinkig, int TEating) {
+    public InitConfig(int NPhil, int SEating, int SHungry, int SThinking) {
         this.NPhil = NPhil;
         this.SEating = SEating;
         this.SHungry = SHungry;
         this.SThinking = SThinking;
-        this.TThinkig = TThinkig;
-        this.TEating = TEating;
     }
 
     public int getNPhil() {
@@ -47,21 +43,5 @@ public class InitConfig {
 
     public void setSThinking(int SThinking) {
         this.SThinking = SThinking;
-    }
-
-    public int getTThinkig() {
-        return TThinkig;
-    }
-
-    public void setTThinkig(int TThinkig) {
-        this.TThinkig = TThinkig;
-    }
-
-    public int getTEating() {
-        return TEating;
-    }
-
-    public void setTEating(int TEating) {
-        this.TEating = TEating;
     }
 }

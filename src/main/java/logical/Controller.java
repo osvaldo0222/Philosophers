@@ -1,5 +1,6 @@
 package logical;
 
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import visual.Main;
@@ -11,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Controller extends Thread {
     private ArrayList<Philosopher> philosophers;
@@ -28,8 +30,17 @@ public class Controller extends Thread {
     private Controller() {
         createImages();
         client = new Client(serverAddress, port);
+        Optional<String> result;
+        do {
+            TextInputDialog dialog = new TextInputDialog("5");
+            dialog.setTitle("Numero de Filosofos");
+            dialog.setHeaderText("Iniciando Sistema...");
+            dialog.setContentText("Ingrese el numero de filosofos:");
+            result = dialog.showAndWait();
+        } while(result == null || result.get().trim().equals("") || !result.get().trim().matches("[0-9]+") || Integer.parseInt(result.get().trim()) <= 0);
+        client.write(result.get().trim());
         Map<String, String> map = getInfo();
-        initConfig = new InitConfig(Integer.parseInt(map.get("NPhil")), Integer.parseInt(map.get("SEating")), Integer.parseInt(map.get("SHungry")), Integer.parseInt(map.get("SThinking")), Integer.parseInt(map.get("TThinking")), Integer.parseInt(map.get("TEating")));
+        initConfig = new InitConfig(Integer.parseInt(map.get("NPhil")), Integer.parseInt(map.get("SEating")), Integer.parseInt(map.get("SHungry")), Integer.parseInt(map.get("SThinking")));
         philosophers = new ArrayList<>();
         createPhilosophers(map);
     }
@@ -139,7 +150,7 @@ public class Controller extends Thread {
 
     public static Map<String, String> stringToMap(String value){
         Map<String, String> map = null;
-        if (!value.equalsIgnoreCase("") && value != null) {
+        if (value != null && !value.equalsIgnoreCase("")) {
             map = new HashMap<>();
             String[] list = value.split(",");
             for (String string : list) {
@@ -162,7 +173,6 @@ public class Controller extends Thread {
             philosopher.setState(Integer.parseInt(map.get(i + "")));
             philosopher.getCircle().setLayoutX(pointTo.getX());
             philosopher.getCircle().setLayoutY(pointTo.getY());
-
             philosophers.add(philosopher);
             startAngle += angle;
         }
@@ -244,11 +254,11 @@ public class Controller extends Thread {
 
     @Override
     public void run() {
-        final double delay = (initConfig.getTEating() >= initConfig.getTThinkig())?(initConfig.getTThinkig() * 1000):(initConfig.getTEating() * 1000);
+        //final double delay = (initConfig.getTEating() >= initConfig.getTThinkig())?(initConfig.getTThinkig() * 1000):(initConfig.getTEating() * 1000);
         while (true) {
             updatePhilosophers();
             try {
-                sleep((delay > 2500)?2500: (long) delay);
+                sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
